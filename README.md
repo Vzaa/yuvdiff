@@ -17,27 +17,28 @@ Screenshots
 
 2. Features
 -----------
-* Can view the channels and their diffs separately
-* Zoomed view of the selected 16x16 macroblock
-* Macroblock grid display
-* Frame stepping
+  * Can view the channels and their diffs separately
+  * Zoomed view of the selected 16x16 macroblock
+  * Macroblock grid display
+  * Frame stepping
 
 3. Dependencies
 -----------
 SDL1.2, SDL_ttf and SDL_gfx 
 
-4. Usage
+1. Usage
 -----------
-yuvdiff < yuv file a > < yuv file b > < width > < height >
+`yuvdiff <yuv file a> <yuv file b> <width> <height>`
 
 
-5. Issues
+4. Issues
 -----------
-1. Bad code structure in general
-2. Black pixels don't replace the previous pixels when the zoomed area is redrawn
-3. Grid lines can be seen in the zoomed macroblock
-4. Getting previous frame when the current frame is the first breaks the output
+  1. Bad code structure in general
+  2. Black pixels don't replace the previous pixels when the zoomed area is redrawn
+  3. Grid lines can be seen in the zoomed macroblock
+  4. Getting previous frame when the current frame is the first breaks the output
+  5. Horrible UI
 
-6. Additional stuff
+5. Additional stuff
 -----------
 Uses FreeSans font from http://ftp.gnu.org/gnu/freefont/freefont-ttf-20120503.zip
