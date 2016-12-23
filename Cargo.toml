@@ -1,0 +1,8 @@
+[package]
+name = "yuvdiff"
+version = "0.1.0"
+authors = ["Vzaa <Vzaa@users.noreply.github.com>"]
+
+[dependencies]
+sdl2 = "0.26.0"
+clap = "2.19.0"
