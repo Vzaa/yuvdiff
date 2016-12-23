@@ -24,7 +24,11 @@ Screenshots
 -----------
 libsdl2-dev is required for the sdl2 crate
 
-4. Usage
+4. Building
+-----------
+	cargo build --release
+
+5. Usage
 -----------
 
 	yuvdiff [OPTIONS] <FILEA> <FILEB> --width <WIDTH> --height <HEIGHT>
@@ -37,7 +41,7 @@ libsdl2-dev is required for the sdl2 crate
 		-w, --width <WIDTH>              Width
 
 
-5. Controls
+6. Controls
 -----------
 y, u, v, c -> Switch between Y U V indivudual channels and RGB view
 
@@ -52,7 +56,6 @@ r -> Reset to first frame
 q -> quit
 
 
-
-6. Issues
+7. Issues
 -----------
   1. Dimensions need to be multiples of 4
