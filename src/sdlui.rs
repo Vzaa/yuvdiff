@@ -1,6 +1,7 @@
 use std::time::Duration;
 use std::thread::sleep;
 use std::usize;
+use std::str::FromStr;
 
 use sdl2;
 use sdl2::pixels::PixelFormatEnum;
@@ -21,11 +22,39 @@ pub enum Channel {
     V,
 }
 
+impl FromStr for Channel {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "C" | "c" => Ok(Channel::YUV),
+            "Y" | "y" => Ok(Channel::Y),
+            "U" | "u" => Ok(Channel::U),
+            "V" | "v" => Ok(Channel::V),
+            _ => Err(format!("'{}' is not a valid channel", s)),
+        }
+    }
+}
+
+
 #[derive(Copy, Clone)]
-enum ViewFrame {
+pub enum ViewFrame {
     FrameA,
     FrameB,
     Diff,
+}
+
+impl FromStr for ViewFrame {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "A" | "a" => Ok(ViewFrame::FrameA),
+            "B" | "b" => Ok(ViewFrame::FrameB),
+            "D" | "d" => Ok(ViewFrame::Diff),
+            _ => Err(format!("'{}' is not a valid frame", s)),
+        }
+    }
 }
 
 enum UserInput {
@@ -169,44 +198,12 @@ impl<'a> SdlUi<'a> {
         buttons
     }
 
-    pub fn set_channel(&mut self, text: &str) -> Result<(), &'static str> {
-        match text {
-            "C" | "c" => {
-                self.settings.show_channel(Channel::YUV);
-                Ok(())
-            }
-            "Y" | "y" => {
-                self.settings.show_channel(Channel::Y);
-                Ok(())
-            }
-            "U" | "u" => {
-                self.settings.show_channel(Channel::U);
-                Ok(())
-            }
-            "V" | "v" => {
-                self.settings.show_channel(Channel::V);
-                Ok(())
-            }
-            _ => Err("Invalid channel argument"),
-        }
+    pub fn set_channel(&mut self, c: Channel) {
+        self.settings.show_channel(c);
     }
 
-    pub fn set_view(&mut self, text: &str) -> Result<(), &'static str> {
-        match text {
-            "A" | "a" => {
-                self.settings.show_frame(ViewFrame::FrameA);
-                Ok(())
-            }
-            "B" | "b" => {
-                self.settings.show_frame(ViewFrame::FrameB);
-                Ok(())
-            }
-            "D" | "d" => {
-                self.settings.show_frame(ViewFrame::Diff);
-                Ok(())
-            }
-            _ => Err("Incorrect view argument"),
-        }
+    pub fn set_view(&mut self, v: ViewFrame) {
+        self.settings.show_frame(v);
     }
 
     pub fn set_diff_multiplier(&mut self, m: u32) {

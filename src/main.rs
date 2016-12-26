@@ -7,7 +7,7 @@ mod sdlui;
 
 use std::process::exit;
 
-use sdlui::SdlUi;
+use sdlui::{SdlUi, Channel, ViewFrame};
 
 pub fn main() {
     let matches = clap_app!(yuvdiff =>
@@ -39,11 +39,18 @@ pub fn main() {
             exit(1)
         });
 
+    let view: ViewFrame = matches.value_of("VIEW").unwrap_or("a").parse().unwrap_or_else(|e| {
+        println!("Invalid frame: {}", e);
+        exit(1)
+    });
+
+    let channel: Channel = matches.value_of("CHANNEL").unwrap_or("c").parse().unwrap_or_else(|e| {
+        println!("Invalid channel: {}", e);
+        exit(1)
+    });
+
     let file_a = matches.value_of("FILEA").unwrap();
     let file_b = matches.value_of("FILEB").unwrap();
-
-    let view = matches.value_of("VIEW").unwrap_or("a");
-    let channel = matches.value_of("CHANNEL").unwrap_or("c");
 
     let mut ui_handle = SdlUi::new(width, height, file_a, file_b).unwrap_or_else(|e| {
         println!("{}", e);
@@ -51,16 +58,8 @@ pub fn main() {
     });
 
     ui_handle.set_diff_multiplier(multiplier);
-
-    ui_handle.set_view(view).unwrap_or_else(|e| {
-        println!("{}", e);
-        exit(1)
-    });
-
-    ui_handle.set_channel(channel).unwrap_or_else(|e| {
-        println!("{}", e);
-        exit(1)
-    });
+    ui_handle.set_view(view);
+    ui_handle.set_channel(channel);
 
     ui_handle.run();
 }
