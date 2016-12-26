@@ -417,7 +417,7 @@ impl<'a> SdlUi<'a> {
                 Event::KeyDown { keycode: Some(Keycode::D), .. } => {
                     inputs.push(UserInput::ShowFrame(ViewFrame::Diff));
                 }
-                Event::MouseButtonUp { mouse_btn: Some(MouseButton::Left), x, y, .. } => {
+                Event::MouseButtonUp { mouse_btn: MouseButton::Left, x, y, .. } => {
                     inputs.push(UserInput::Click(x, y));
                 }
                 _ => (),
