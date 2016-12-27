@@ -360,7 +360,7 @@ impl<'a> SdlUi<'a> {
                 self.renderer
                     .copy(&zoomed,
                           None,
-                          Some(Rect::new(self.width as i32, 0, 256, 256)))
+                          Some(Rect::new(self.width as i32, 0, ZOOMED, ZOOMED)))
                     .unwrap();
             }
         }
