@@ -20,40 +20,54 @@ pub fn main() {
         (@arg FILEA: +required "YUV file A")
         (@arg FILEB: +required "YUV file B")
         (@arg MULTIPLIER: -m --multiplier +takes_value "Diff multiplier (default: 5)")
-    )
-        .get_matches();
+    ).get_matches();
 
-    let width: u32 = matches.value_of("WIDTH").unwrap().parse().unwrap_or_else(|e| {
-        println!("Invalid width: {}", e);
-        exit(1)
-    });
+    let width: u32 = matches.value_of("WIDTH").unwrap().parse().unwrap_or_else(
+        |e| {
+            eprintln!("Invalid width: {}", e);
+            exit(1)
+        },
+    );
 
-    let height: u32 = matches.value_of("HEIGHT").unwrap().parse().unwrap_or_else(|e| {
-        println!("Invalid height: {}", e);
-        exit(1)
-    });
+    let height: u32 = matches.value_of("HEIGHT").unwrap().parse().unwrap_or_else(
+        |e| {
+            eprintln!("Invalid height: {}", e);
+            exit(1)
+        },
+    );
 
-    let multiplier: u32 =
-        matches.value_of("MULTIPLIER").unwrap_or("5").parse().unwrap_or_else(|e| {
-            println!("Invalid multiplier: {}", e);
+    let multiplier: u32 = matches
+        .value_of("MULTIPLIER")
+        .unwrap_or("5")
+        .parse()
+        .unwrap_or_else(|e| {
+            eprintln!("Invalid multiplier: {}", e);
             exit(1)
         });
 
-    let view: ViewFrame = matches.value_of("VIEW").unwrap_or("a").parse().unwrap_or_else(|e| {
-        println!("Invalid frame: {}", e);
-        exit(1)
-    });
+    let view: ViewFrame = matches
+        .value_of("VIEW")
+        .unwrap_or("a")
+        .parse()
+        .unwrap_or_else(|e| {
+            eprintln!("Invalid frame: {}", e);
+            exit(1)
+        });
 
-    let channel: Channel = matches.value_of("CHANNEL").unwrap_or("c").parse().unwrap_or_else(|e| {
-        println!("Invalid channel: {}", e);
-        exit(1)
-    });
+    let channel: Channel = matches
+        .value_of("CHANNEL")
+        .unwrap_or("c")
+        .parse()
+        .unwrap_or_else(|e| {
+            eprintln!("Invalid channel: {}", e);
+            exit(1)
+        });
 
     let file_a = matches.value_of("FILEA").unwrap();
     let file_b = matches.value_of("FILEB").unwrap();
 
     let mut ui_handle = SdlUi::new(width, height, file_a, file_b).unwrap_or_else(|e| {
-        println!("{}", e);
+        eprintln!("{}", e);
         exit(1)
     });
 

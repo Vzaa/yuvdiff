@@ -156,25 +156,30 @@ impl<'a> SdlUi<'a> {
         let width_s: usize = width as usize;
         let height_s: usize = height as usize;
         let sdl_context = sdl2::init().map_err(|e| format!("Can't init SDL: {}", e))?;
-        let video_subsystem = sdl_context.video()
+        let video_subsystem = sdl_context
+            .video()
             .map_err(|e| format!("Can't init SDL Video: {}", e))?;
 
         let w = width + ZOOMED;
         let h = if ZOOMED > height { ZOOMED } else { height };
 
-        let window = video_subsystem.window("yuvdiff", w, h)
+        let window = video_subsystem
+            .window("yuvdiff", w, h)
             .position_centered()
             .build()
             .map_err(|e| format!("Can't init SDL Window: {}", e))?;
 
-        let renderer =
-            window.renderer().build().map_err(|e| format!("Can't init SDL Renderer: {}", e))?;
+        let renderer = window
+            .renderer()
+            .build()
+            .map_err(|e| format!("Can't init SDL Renderer: {}", e))?;
 
         let reader_a = YuvReader::new(width_s, height_s, file_a)
             .map_err(|e| format!("Can't open '{}': {}", file_a, e))?;
         let reader_b = YuvReader::new(width_s, height_s, file_b)
             .map_err(|e| format!("Can't open '{}': {}", file_b, e))?;
-        let event_pump = sdl_context.event_pump()
+        let event_pump = sdl_context
+            .event_pump()
             .map_err(|e| format!("Can't init SDL event pump: {}", e))?;
         let uv_size = buf_size_pad(width_s / 2, height_s / 2);
 
@@ -193,8 +198,12 @@ impl<'a> SdlUi<'a> {
     }
 
     fn button_cfg(w: u32, h: u32) -> Vec<(Button, Box<ButtonHandler>)> {
-        let buttons: Vec<(Button, Box<ButtonHandler>)> = vec![(Button::new(Rect::new(0, 0, w, h)),
-                                                               Box::new(UiSettings::mblock_set))];
+        let buttons: Vec<(Button, Box<ButtonHandler>)> = vec![
+            (
+                Button::new(Rect::new(0, 0, w, h)),
+                Box::new(UiSettings::mblock_set),
+            ),
+        ];
         buttons
     }
 
@@ -242,7 +251,8 @@ impl<'a> SdlUi<'a> {
         let w: i32 = self.width as i32;
         let h: i32 = self.height as i32;
 
-        self.renderer.set_draw_color(sdl2::pixels::Color::RGBA(128, 128, 128, 128));
+        self.renderer
+            .set_draw_color(sdl2::pixels::Color::RGBA(128, 128, 128, 128));
 
         for xx in (1..).map(|x| x * size).take_while(|x| *x < w) {
             let a = Point::new(xx, 0);
@@ -258,7 +268,8 @@ impl<'a> SdlUi<'a> {
     }
 
     fn display(&mut self) {
-        self.renderer.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
+        self.renderer
+            .set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
         self.renderer.clear();
         {
             let viewed = match self.settings.viewed {
@@ -282,25 +293,41 @@ impl<'a> SdlUi<'a> {
                 let (y, u, v) = match self.settings.channel {
                     Channel::YUV => (viewed.y_frame(), viewed.u_frame(), viewed.v_frame()),
                     Channel::Y => {
-                        (viewed.y_frame(), &self.empty_uv[0..uv_len], &self.empty_uv[0..uv_len])
+                        (
+                            viewed.y_frame(),
+                            &self.empty_uv[0..uv_len],
+                            &self.empty_uv[0..uv_len],
+                        )
                     }
                     Channel::U => {
-                        (viewed.u_frame(), &self.empty_uv[0..uv_len], &self.empty_uv[0..uv_len])
+                        (
+                            viewed.u_frame(),
+                            &self.empty_uv[0..uv_len],
+                            &self.empty_uv[0..uv_len],
+                        )
                     }
                     Channel::V => {
-                        (viewed.v_frame(), &self.empty_uv[0..uv_len], &self.empty_uv[0..uv_len])
+                        (
+                            viewed.v_frame(),
+                            &self.empty_uv[0..uv_len],
+                            &self.empty_uv[0..uv_len],
+                        )
                     }
                 };
 
                 let mut texture = self.renderer
                     .create_texture_streaming(PixelFormatEnum::YV12, text_w as u32, text_h as u32)
                     .unwrap();
-                texture.update_yuv(None, y, text_w, u, text_w / 2, v, text_w / 2).unwrap();
+                texture
+                    .update_yuv(None, y, text_w, u, text_w / 2, v, text_w / 2)
+                    .unwrap();
 
                 self.renderer
-                    .copy(&texture,
-                          None,
-                          Some(Rect::new(0, 0, self.width, self.height)))
+                    .copy(
+                        &texture,
+                        None,
+                        Some(Rect::new(0, 0, self.width, self.height)),
+                    )
                     .unwrap();
             }
 
@@ -308,16 +335,20 @@ impl<'a> SdlUi<'a> {
             {
                 let (x, y, w, h) = match self.settings.channel {
                     Channel::YUV | Channel::Y => {
-                        (self.settings.mblock_x,
-                         self.settings.mblock_y,
-                         self.width as usize,
-                         self.settings.mblock_size)
+                        (
+                            self.settings.mblock_x,
+                            self.settings.mblock_y,
+                            self.width as usize,
+                            self.settings.mblock_size,
+                        )
                     }
                     Channel::U | Channel::V => {
-                        (self.settings.mblock_x / 2,
-                         self.settings.mblock_y / 2,
-                         self.width as usize / 2,
-                         self.settings.mblock_size / 2)
+                        (
+                            self.settings.mblock_x / 2,
+                            self.settings.mblock_y / 2,
+                            self.width as usize / 2,
+                            self.settings.mblock_size / 2,
+                        )
                     }
                 };
 
@@ -338,7 +369,11 @@ impl<'a> SdlUi<'a> {
 
                 let (y_pad, u_pad, v_pad) = match self.settings.channel {
                     Channel::YUV => {
-                        (viewed.y_frame_pad(), viewed.u_frame_pad(), viewed.v_frame_pad())
+                        (
+                            viewed.y_frame_pad(),
+                            viewed.u_frame_pad(),
+                            viewed.v_frame_pad(),
+                        )
                     }
                     Channel::Y => (viewed.y_frame_pad(), &*self.empty_uv, &*self.empty_uv),
                     Channel::U => (viewed.u_frame_pad(), &*self.empty_uv, &*self.empty_uv),
@@ -348,19 +383,24 @@ impl<'a> SdlUi<'a> {
                     .create_texture_streaming(PixelFormatEnum::YV12, zoom_w as u32, zoom_h as u32)
                     .unwrap();
 
-                zoomed.update_yuv(None,
-                                &y_pad[y_start..y_end],
-                                w,
-                                &u_pad[uv_start..uv_end],
-                                w / 2,
-                                &v_pad[uv_start..uv_end],
-                                w / 2)
+                zoomed
+                    .update_yuv(
+                        None,
+                        &y_pad[y_start..y_end],
+                        w,
+                        &u_pad[uv_start..uv_end],
+                        w / 2,
+                        &v_pad[uv_start..uv_end],
+                        w / 2,
+                    )
                     .unwrap();
 
                 self.renderer
-                    .copy(&zoomed,
-                          None,
-                          Some(Rect::new(self.width as i32, 0, ZOOMED, ZOOMED)))
+                    .copy(
+                        &zoomed,
+                        None,
+                        Some(Rect::new(self.width as i32, 0, ZOOMED, ZOOMED)),
+                    )
                     .unwrap();
             }
         }
@@ -378,43 +418,84 @@ impl<'a> SdlUi<'a> {
         for event in self.event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } |
-                Event::KeyDown { keycode: Some(Keycode::Q), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::Q),
+                    ..
+                } => {
                     inputs.push(UserInput::Quit);
                 }
-                Event::KeyDown { keycode: Some(Keycode::N), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::N),
+                    ..
+                } => {
                     inputs.push(UserInput::Next);
                 }
-                Event::KeyDown { keycode: Some(Keycode::P), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::P),
+                    ..
+                } => {
                     inputs.push(UserInput::Prev);
                 }
-                Event::KeyDown { keycode: Some(Keycode::R), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::R),
+                    ..
+                } => {
                     inputs.push(UserInput::FirstFrame);
                 }
-                Event::KeyDown { keycode: Some(Keycode::G), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::G),
+                    ..
+                } => {
                     inputs.push(UserInput::GridToggle);
                 }
-                Event::KeyDown { keycode: Some(Keycode::C), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::C),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowChannel(Channel::YUV));
                 }
-                Event::KeyDown { keycode: Some(Keycode::Y), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::Y),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowChannel(Channel::Y));
                 }
-                Event::KeyDown { keycode: Some(Keycode::U), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::U),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowChannel(Channel::U));
                 }
-                Event::KeyDown { keycode: Some(Keycode::V), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::V),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowChannel(Channel::V));
                 }
-                Event::KeyDown { keycode: Some(Keycode::A), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::A),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowFrame(ViewFrame::FrameA));
                 }
-                Event::KeyDown { keycode: Some(Keycode::B), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::B),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowFrame(ViewFrame::FrameB));
                 }
-                Event::KeyDown { keycode: Some(Keycode::D), .. } => {
+                Event::KeyDown {
+                    keycode: Some(Keycode::D),
+                    ..
+                } => {
                     inputs.push(UserInput::ShowFrame(ViewFrame::Diff));
                 }
-                Event::MouseButtonUp { mouse_btn: MouseButton::Left, x, y, .. } => {
+                Event::MouseButtonUp {
+                    mouse_btn: MouseButton::Left,
+                    x,
+                    y,
+                    ..
+                } => {
                     inputs.push(UserInput::Click(x, y));
                 }
                 _ => (),

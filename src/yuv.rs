@@ -93,9 +93,24 @@ impl Yuv {
 
         let differ = |(a, b): (&u8, &u8)| (*a as i16 - *b as i16).abs() as u8;
 
-        let pix_y: Vec<_> = frame_a.pix_y.iter().zip(frame_b.pix_y.iter()).map(&differ).collect();
-        let pix_u: Vec<_> = frame_a.pix_u.iter().zip(frame_b.pix_u.iter()).map(&differ).collect();
-        let pix_v: Vec<_> = frame_a.pix_v.iter().zip(frame_b.pix_v.iter()).map(&differ).collect();
+        let pix_y: Vec<_> = frame_a
+            .pix_y
+            .iter()
+            .zip(frame_b.pix_y.iter())
+            .map(&differ)
+            .collect();
+        let pix_u: Vec<_> = frame_a
+            .pix_u
+            .iter()
+            .zip(frame_b.pix_u.iter())
+            .map(&differ)
+            .collect();
+        let pix_v: Vec<_> = frame_a
+            .pix_v
+            .iter()
+            .zip(frame_b.pix_v.iter())
+            .map(&differ)
+            .collect();
 
         Ok(Yuv {
             width: frame_a.width,
@@ -191,13 +206,19 @@ impl YuvReader {
             self.frame_cnt += 1;
             Ok(())
         } else {
-            Err(Error::new(ErrorKind::UnexpectedEof, "Not enough data in file"))
+            Err(Error::new(
+                ErrorKind::UnexpectedEof,
+                "Not enough data in file",
+            ))
         }
     }
 
     pub fn nth_frame(&mut self, n: u64) -> io::Result<()> {
         if n == 0 {
-            return Err(Error::new(ErrorKind::UnexpectedEof, "Frame number needs to be >0"));
+            return Err(Error::new(
+                ErrorKind::UnexpectedEof,
+                "Frame number needs to be >0",
+            ));
         }
 
         // panic if we can't get metadata
@@ -213,7 +234,10 @@ impl YuvReader {
             self.frame_cnt = n - 1;
             self.next_frame()
         } else {
-            Err(Error::new(ErrorKind::UnexpectedEof, "Not enough data in file"))
+            Err(Error::new(
+                ErrorKind::UnexpectedEof,
+                "Not enough data in file",
+            ))
         }
     }
 
