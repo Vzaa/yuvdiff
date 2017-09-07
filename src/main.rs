@@ -7,7 +7,7 @@ mod sdlui;
 
 use std::process::exit;
 
-use sdlui::{SdlUi, Channel, ViewFrame};
+use sdlui::{Channel, SdlUi, ViewFrame};
 
 pub fn main() {
     let matches = clap_app!(yuvdiff =>
@@ -22,19 +22,23 @@ pub fn main() {
         (@arg MULTIPLIER: -m --multiplier +takes_value "Diff multiplier (default: 5)")
     ).get_matches();
 
-    let width: u32 = matches.value_of("WIDTH").unwrap().parse().unwrap_or_else(
-        |e| {
+    let width: u32 = matches
+        .value_of("WIDTH")
+        .unwrap()
+        .parse()
+        .unwrap_or_else(|e| {
             eprintln!("Invalid width: {}", e);
             exit(1)
-        },
-    );
+        });
 
-    let height: u32 = matches.value_of("HEIGHT").unwrap().parse().unwrap_or_else(
-        |e| {
+    let height: u32 = matches
+        .value_of("HEIGHT")
+        .unwrap()
+        .parse()
+        .unwrap_or_else(|e| {
             eprintln!("Invalid height: {}", e);
             exit(1)
-        },
-    );
+        });
 
     let multiplier: u32 = matches
         .value_of("MULTIPLIER")

@@ -5,7 +5,7 @@ use std::str::FromStr;
 
 use sdl2;
 use sdl2::pixels::PixelFormatEnum;
-use sdl2::rect::{Rect, Point};
+use sdl2::rect::{Point, Rect};
 use sdl2::event::Event;
 use sdl2::mouse::MouseButton;
 use sdl2::keyboard::Keycode;
@@ -292,27 +292,21 @@ impl<'a> SdlUi<'a> {
 
                 let (y, u, v) = match self.settings.channel {
                     Channel::YUV => (viewed.y_frame(), viewed.u_frame(), viewed.v_frame()),
-                    Channel::Y => {
-                        (
-                            viewed.y_frame(),
-                            &self.empty_uv[0..uv_len],
-                            &self.empty_uv[0..uv_len],
-                        )
-                    }
-                    Channel::U => {
-                        (
-                            viewed.u_frame(),
-                            &self.empty_uv[0..uv_len],
-                            &self.empty_uv[0..uv_len],
-                        )
-                    }
-                    Channel::V => {
-                        (
-                            viewed.v_frame(),
-                            &self.empty_uv[0..uv_len],
-                            &self.empty_uv[0..uv_len],
-                        )
-                    }
+                    Channel::Y => (
+                        viewed.y_frame(),
+                        &self.empty_uv[0..uv_len],
+                        &self.empty_uv[0..uv_len],
+                    ),
+                    Channel::U => (
+                        viewed.u_frame(),
+                        &self.empty_uv[0..uv_len],
+                        &self.empty_uv[0..uv_len],
+                    ),
+                    Channel::V => (
+                        viewed.v_frame(),
+                        &self.empty_uv[0..uv_len],
+                        &self.empty_uv[0..uv_len],
+                    ),
                 };
 
                 let mut texture = self.renderer
@@ -334,22 +328,18 @@ impl<'a> SdlUi<'a> {
             // Render zoomed mblock
             {
                 let (x, y, w, h) = match self.settings.channel {
-                    Channel::YUV | Channel::Y => {
-                        (
-                            self.settings.mblock_x,
-                            self.settings.mblock_y,
-                            self.width as usize,
-                            self.settings.mblock_size,
-                        )
-                    }
-                    Channel::U | Channel::V => {
-                        (
-                            self.settings.mblock_x / 2,
-                            self.settings.mblock_y / 2,
-                            self.width as usize / 2,
-                            self.settings.mblock_size / 2,
-                        )
-                    }
+                    Channel::YUV | Channel::Y => (
+                        self.settings.mblock_x,
+                        self.settings.mblock_y,
+                        self.width as usize,
+                        self.settings.mblock_size,
+                    ),
+                    Channel::U | Channel::V => (
+                        self.settings.mblock_x / 2,
+                        self.settings.mblock_y / 2,
+                        self.width as usize / 2,
+                        self.settings.mblock_size / 2,
+                    ),
                 };
 
                 let y_start = x + (y * w);
@@ -368,13 +358,11 @@ impl<'a> SdlUi<'a> {
                 };
 
                 let (y_pad, u_pad, v_pad) = match self.settings.channel {
-                    Channel::YUV => {
-                        (
-                            viewed.y_frame_pad(),
-                            viewed.u_frame_pad(),
-                            viewed.v_frame_pad(),
-                        )
-                    }
+                    Channel::YUV => (
+                        viewed.y_frame_pad(),
+                        viewed.u_frame_pad(),
+                        viewed.v_frame_pad(),
+                    ),
                     Channel::Y => (viewed.y_frame_pad(), &*self.empty_uv, &*self.empty_uv),
                     Channel::U => (viewed.u_frame_pad(), &*self.empty_uv, &*self.empty_uv),
                     Channel::V => (viewed.v_frame_pad(), &*self.empty_uv, &*self.empty_uv),
@@ -523,13 +511,11 @@ impl<'a> SdlUi<'a> {
         let mut should_quit = false;
         for event in inputs {
             match event {
-                UserInput::Next => {
-                    if self.reader_a.has_next() && self.reader_b.has_next() {
-                        self.reader_a.next_frame().unwrap();
-                        self.reader_b.next_frame().unwrap();
-                        self.gen_diff();
-                    }
-                }
+                UserInput::Next => if self.reader_a.has_next() && self.reader_b.has_next() {
+                    self.reader_a.next_frame().unwrap();
+                    self.reader_b.next_frame().unwrap();
+                    self.gen_diff();
+                },
                 UserInput::Prev => {
                     // Assume this only fails at 1st frame, ignore err for now
                     self.reader_a.prev_frame().unwrap_or(());

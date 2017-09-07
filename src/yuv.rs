@@ -1,6 +1,6 @@
 use std::u8;
 use std::io;
-use std::io::{Read, BufReader, Seek, SeekFrom};
+use std::io::{BufReader, Read, Seek, SeekFrom};
 use std::io::{Error, ErrorKind};
 use std::fs::File;
 
@@ -91,7 +91,7 @@ impl Yuv {
             return Err("Sizes differ");
         }
 
-        let differ = |(a, b): (&u8, &u8)| (*a as i16 - *b as i16).abs() as u8;
+        let differ = |(a, b): (&u8, &u8)| (i16::from(*a) - i16::from(*b)).abs() as u8;
 
         let pix_y: Vec<_> = frame_a
             .pix_y
@@ -123,8 +123,8 @@ impl Yuv {
 
     pub fn multiplied(mut self, m: u32) -> Yuv {
         let multiplier = |p: &u8| {
-            let s: u32 = (*p as u32) * m;
-            if s >= (u8::MAX as u32) {
+            let s: u32 = u32::from(*p) * m;
+            if s >= u32::from(u8::MAX) {
                 u8::MAX
             } else {
                 s as u8
