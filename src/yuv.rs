@@ -131,15 +131,10 @@ impl Yuv {
             }
         };
 
-        for pix in self.pix_y.iter_mut() {
-            *pix = multiplier(pix)
-        }
-        for pix in self.pix_u.iter_mut() {
-            *pix = multiplier(pix)
-        }
-        for pix in self.pix_v.iter_mut() {
-            *pix = multiplier(pix)
-        }
+        self.pix_y.iter_mut().for_each(|pix| *pix = multiplier(pix));
+        self.pix_u.iter_mut().for_each(|pix| *pix = multiplier(pix));
+        self.pix_v.iter_mut().for_each(|pix| *pix = multiplier(pix));
+
         self
     }
 
